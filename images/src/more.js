@@ -195,4 +195,5 @@ td:last-child{border-radius:0 14px 14px 0}
 </style>
 <table><tr><th>상태</th><th>A1 링 라이트 / 휴머노이드 손목 빛</th><th>아이 팔찌</th><th>엄마 글래스</th><th>소리</th></tr>${rows}</table>
 `);
+  require('./family')(pages, { door, table, plate, book, sofa, dust, chipSvg, waves });
 };
