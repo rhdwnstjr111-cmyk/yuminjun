@@ -133,12 +133,12 @@ module.exports = function addPages(pages) {
     '팔찌로 A1을 <b>가리켜 꾹</b> → 곁으로 온다. 시무룩해져 팔찌를 꼭 쥐면 엄마가 손목을 두드려 <b>따뜻한 토닥</b>으로 답한다')}
   ${panel(6, 2, 1, '엄마의 귀가', '19:00', `${floor()}
      <rect x="0" y="60" width="${pw}" height="240" fill="${C.green}" opacity="0.08"/>
-     ${adult(110, 300, { dir: 1, scale: 0.62 })}
+     ${adult(110, 300, { dir: 1, scale: 0.62, glasses: false })}
      ${child(230, 300, { dir: -1, scale: 0.6 })}
      ${a1(380, 300, { mode: 'space', dir: -1, scale: 0.7, glow: C.green })}
      ${humanoid(500, 300, { dir: -1, scale: 0.55, pose: 'yield' })}
-     ${chipSvg(150, 70, '오늘 오후 · 간식 ✓ 숙제 ✓', { w: 250, dot: C.green })}`,
-    '글래스에 <b>공간 위 공기 색</b>과 오후 요약. A1은 공간 자세로 돌아가고 휴머노이드는 정리. “엄마, 나 숙제 다 했어!”')}
+     <g transform="translate(250 70)"><rect width="230" height="40" rx="14" fill="${C.paper}" stroke="${C.ink}" stroke-width="2"/><path d="M 130 40 l 10 14 l 8 -14" fill="${C.paper}" stroke="${C.ink}" stroke-width="2"/><text x="16" y="26" font-size="15">“간식 먹고, 숙제 다 했어요”</text></g>`,
+    '현관을 넘으면 <b>글래스는 조용해지고</b>, A1이 빛과 <b>목소리</b>로 오늘을 전한다. 엄마는 지우와 눈을 맞춘다. “엄마, 나 숙제 다 했어!”')}
 </svg>
 `);
 
@@ -178,7 +178,7 @@ module.exports = function addPages(pages) {
     ['이동 · 작업 중', C.orange, '진행 방향 흐름', '—', '“간식 데우는 중 · 3분”', '—'],
     ['확인 필요', C.yellow, '천천히 깜빡', '톡톡 2회', '승인 카드', '물음 억양'],
     ['완료', C.green, '한 번 퍼짐', '—', '칩 사라짐', '하강 2음'],
-    ['공기 상태', 'linear-gradient(90deg,#3DBE7A,#F2B632,#FF6A2B)', '색만 (초록→주황)', '—', '귀가 시 공간 오버레이', '—'],
+    ['공기 상태', 'linear-gradient(90deg,#3DBE7A,#F2B632,#FF6A2B)', '색만 (초록→주황)', '—', '집 밖에서 칩 색으로만', '—'],
     ['엄마의 토닥', '#FFB08A', '—', '온기 + 느린 진동 2회', '—', '—'],
     ['보고 있음', C.ink, '셔터 열림 + 표시등', '—', '—', '—'],
   ];
