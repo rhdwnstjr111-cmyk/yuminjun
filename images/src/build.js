@@ -5,6 +5,7 @@ const { C, a1, child, adult, humanoid, dog, label, callout, page } = require('./
 
 const pages = {};
 require('./more')(pages);
+require('./mood')(pages);
 
 // 01 — Next A1 two postures
 pages['01_a1_postures'] = page('Next A1 Form Factor', ['공간을 지킬 때는 서 있고, 한 사람을 돌볼 때는 낮아진다', '두 가지 자세를 가진 소프트 바디'], `

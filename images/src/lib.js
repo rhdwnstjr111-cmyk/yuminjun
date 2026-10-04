@@ -17,24 +17,28 @@ const S = (w = 3) => `stroke="${C.ink}" stroke-width="${w}" stroke-linecap="roun
 
 // Next A1. mode: 'space' (tall, neck up) | 'side' (low, head tilted toward dir)
 // dir: 1 faces right, -1 faces left. glow: ring light color or null.
-function a1(x, y, { mode = 'space', dir = 1, glow = null, scale = 1, shutter = 'closed', touch = false } = {}) {
+function a1(x, y, { mode = 'space', dir = 1, glow = null, scale = 1, shutter = 'closed', touch = false, tone = 'light', nest = false } = {}) {
+  const F = tone === 'dark' ? '#4A4744' : C.card;
+  const LN = tone === 'dark' ? '#5E5A56' : C.soft;
+  const EYE = tone === 'dark' ? '#F5F4F2' : C.ink;
   const neck = mode === 'space' ? 62 : 6;
   const tilt = mode === 'space' ? 0 : 16 * dir;
   const bodyH = 120, bodyW = 104;
   const g = [];
   // floor shadow
+  if (nest) g.push(`<path d="M ${bodyW / 2 - 4} -6 L ${bodyW / 2 + 70} -6 Q ${bodyW / 2 + 80} -6 ${bodyW / 2 + 80} -16 L ${bodyW / 2 + 80} -22 L ${bodyW / 2 - 2} -22 Z" fill="${F}" ${S(2.5)}/>`);
   g.push(`<ellipse cx="0" cy="2" rx="62" ry="8" fill="${C.ink}" opacity="0.08"/>`);
   // body
-  g.push(`<path d="M ${-bodyW / 2} 0 L ${-bodyW / 2 + 6} ${-bodyH} Q 0 ${-bodyH - 10} ${bodyW / 2 - 6} ${-bodyH} L ${bodyW / 2} 0 Z" fill="${C.card}" ${S()}/>`);
+  g.push(`<path d="M ${-bodyW / 2} 0 L ${-bodyW / 2 + 6} ${-bodyH} Q 0 ${-bodyH - 10} ${bodyW / 2 - 6} ${-bodyH} L ${bodyW / 2} 0 Z" fill="${F}" ${S()}/>`);
   // fabric intake lines
-  for (let i = -3; i <= 3; i++) g.push(`<line x1="${i * 11}" y1="-18" x2="${i * 11 * 0.95}" y2="-70" stroke="${C.soft}" stroke-width="2"/>`);
+  for (let i = -3; i <= 3; i++) g.push(`<line x1="${i * 11}" y1="-18" x2="${i * 11 * 0.95}" y2="-70" stroke="${LN}" stroke-width="2"/>`);
   // silicone band
   g.push(`<rect x="${-bodyW / 2 - 4}" y="-96" width="${bodyW + 8}" height="20" rx="10" fill="${touch ? C.orangeSoft : C.soft}" ${S(2.5)}/>`);
   // neck
-  if (neck <= 10) g.push(`<rect x="-34" y="${-bodyH - 16}" width="68" height="22" rx="8" fill="${C.card}" ${S()}/>`);
+  if (neck <= 10) g.push(`<rect x="-34" y="${-bodyH - 16}" width="68" height="22" rx="8" fill="${F}" ${S()}/>`);
   if (neck > 10) {
-    g.push(`<rect x="-30" y="${-bodyH - neck - 4}" width="60" height="${neck + 8}" rx="8" fill="${C.card}" ${S()}/>`);
-    for (let i = 1; i < 4; i++) g.push(`<line x1="-30" y1="${-bodyH - (neck * i) / 4}" x2="30" y2="${-bodyH - (neck * i) / 4}" stroke="${C.soft}" stroke-width="2"/>`);
+    g.push(`<rect x="-30" y="${-bodyH - neck - 4}" width="60" height="${neck + 8}" rx="8" fill="${F}" ${S()}/>`);
+    for (let i = 1; i < 4; i++) g.push(`<line x1="-30" y1="${-bodyH - (neck * i) / 4}" x2="30" y2="${-bodyH - (neck * i) / 4}" stroke="${LN}" stroke-width="2"/>`);
   }
   // head group
   const hy = -bodyH - neck;
@@ -42,11 +46,12 @@ function a1(x, y, { mode = 'space', dir = 1, glow = null, scale = 1, shutter = '
   // ring light
   head.push(`<rect x="-46" y="-8" width="92" height="10" rx="5" fill="${glow || C.soft}" ${S(2)}/>`);
   if (glow) head.push(`<rect x="-56" y="-14" width="112" height="22" rx="11" fill="${glow}" opacity="0.18"/>`);
-  head.push(`<path d="M -50 -8 Q -50 -62 0 -64 Q 50 -62 50 -8 Z" fill="${C.card}" ${S()}/>`);
+  head.push(`<path d="M -50 -8 Q -50 -62 0 -64 Q 50 -62 50 -8 Z" fill="${F}" ${S()}/>`);
   // eyes (light bars) facing dir
   const ex = 14 * dir;
-  head.push(`<rect x="${ex - 15}" y="-44" width="7" height="18" rx="3.5" fill="${C.ink}"/>`);
-  head.push(`<rect x="${ex + 8}" y="-44" width="7" height="18" rx="3.5" fill="${C.ink}"/>`);
+  head.push(`<rect x="${ex - 15}" y="-44" width="7" height="18" rx="3.5" fill="${EYE}"/>`);
+  head.push(`<rect x="${ex - 3}" y="-44" width="7" height="18" rx="3.5" fill="${EYE}"/>`);
+  head.push(`<rect x="${ex + 9}" y="-44" width="7" height="18" rx="3.5" fill="${EYE}"/>`);
   // camera + shutter
   const cx = 34 * dir;
   head.push(`<circle cx="${cx}" cy="-36" r="6" fill="${shutter === 'open' ? C.ink : C.soft}" ${S(2)}/>`);
@@ -147,7 +152,8 @@ function humanoid(x, y, { dir = 1, scale = 1, pose = 'work', glow = null } = {})
   g.push(`<rect x="-36" y="${shoulderY + 40}" width="72" height="16" rx="8" fill="${C.soft}" ${S(2)}/>`);
   // head
   g.push(`<rect x="-24" y="${shoulderY - 58}" width="48" height="52" rx="20" fill="${C.card}" ${S()}/>`);
-  g.push(`<rect x="${-14 + 6 * dir}" y="${shoulderY - 40}" width="28" height="12" rx="6" fill="${C.ink}"/>`);
+  g.push(`<rect x="${-18 + 4 * dir}" y="${shoulderY - 44}" width="36" height="20" rx="10" fill="${C.ink}"/>`);
+  [-8, 0, 8].forEach(dx => g.push(`<rect x="${4 * dir + dx - 1.5}" y="${shoulderY - 40}" width="3" height="12" rx="1.5" fill="#F5F4F2"/>`));
   const wrist = glow || C.soft;
   if (pose === 'work') {
     g.push(`<path d="M ${26 * dir} ${shoulderY + 14} L ${62 * dir} ${shoulderY + 70} L ${96 * dir} ${shoulderY + 70}" fill="none" ${S(12)}/>`);
@@ -165,6 +171,44 @@ function humanoid(x, y, { dir = 1, scale = 1, pose = 'work', glow = null } = {})
     g.push(`<circle cx="${86 * dir}" cy="${shoulderY + 35}" r="6" fill="${wrist}" ${S(2)}/>`);
     if (glow) g.push(`<circle cx="${86 * dir}" cy="${shoulderY + 35}" r="16" fill="${glow}" opacity="0.25"/>`);
   }
+  return `<g transform="translate(${x} ${y}) scale(${scale})">${g.join('')}</g>`;
+}
+
+
+// Robot pet (~30cm). mood: 'happy' | 'curious' | 'wait' | 'sleep'. warm: belly glow.
+function pet(x, y, { dir = 1, scale = 1, mood = 'happy', warm = false, color = '#EFE6D8' } = {}) {
+  const g = [];
+  g.push(`<ellipse cx="0" cy="2" rx="46" ry="6" fill="${C.ink}" opacity="0.08"/>`);
+  const earUp = mood === 'happy' || mood === 'curious';
+  const tilt = mood === 'curious' ? 10 * dir : 0;
+  const body = [];
+  if (warm) body.push(`<ellipse cx="0" cy="-30" rx="58" ry="40" fill="${C.orange}" opacity="0.22"/>`);
+  // tail antenna
+  const tail = mood === 'sleep' ? `M ${-40 * dir} -14 q ${-14 * dir} 2 ${-18 * dir} 10` : `M ${-40 * dir} -26 q ${-16 * dir} -10 ${-14 * dir} -30`;
+  body.push(`<path d="${tail}" fill="none" ${S(4)}/><circle cx="${(mood === 'sleep' ? -58 : -54) * dir}" cy="${mood === 'sleep' ? -4 : -56}" r="5" fill="${C.orange}" ${S(2)}/>`);
+  // ears
+  if (earUp) {
+    body.push(`<path d="M ${-24 + 4 * dir} -58 Q ${-30 + 4 * dir} -92 ${-12 + 4 * dir} -84 Q ${-6 + 4 * dir} -70 ${-8 + 4 * dir} -60 Z" fill="${color}" ${S(2.5)}/>`);
+    body.push(`<path d="M ${10 + 4 * dir} -60 Q ${16 + 4 * dir} -94 ${30 + 4 * dir} -82 Q ${32 + 4 * dir} -68 ${26 + 4 * dir} -56 Z" fill="${color}" ${S(2.5)}/>`);
+  } else {
+    body.push(`<path d="M ${-26 * dir} -52 Q ${-48 * dir} -50 ${-46 * dir} -36 Q ${-36 * dir} -38 ${-22 * dir} -42 Z" fill="${color}" ${S(2.5)}/>`);
+    body.push(`<path d="M ${24 * dir} -54 Q ${44 * dir} -60 ${48 * dir} -44 Q ${36 * dir} -42 ${22 * dir} -44 Z" fill="${color}" ${S(2.5)}/>`);
+  }
+  // loaf body
+  body.push(`<path d="M -44 -4 Q -48 -62 0 -64 Q 48 -62 44 -4 Q 0 4 -44 -4 Z" fill="${color}" ${S()}/>`);
+  // knit texture
+  for (let i = -2; i <= 2; i++) body.push(`<path d="M ${i * 14 - 4} -14 q 4 -6 8 0" fill="none" stroke="#CDBFA9" stroke-width="2"/>`);
+  // face: three-line eyes
+  const fx = 14 * dir;
+  if (mood === 'sleep') {
+    body.push(`<path d="M ${fx - 14} -38 q 4 3 8 0 M ${fx + 6} -38 q 4 3 8 0" fill="none" ${S(2.5)}/>`);
+  } else {
+    [-10, 0, 10].forEach((dx, k) => body.push(`<rect x="${fx + dx - 2}" y="${-46 + (k === 1 ? -2 : 0)}" width="4" height="${mood === 'wait' ? 6 : 12}" rx="2" fill="${C.ink}"/>`));
+  }
+  body.push(`<circle cx="${fx}" cy="-26" r="2.4" fill="${C.ink}" opacity="0.7"/>`);
+  // silicone feet
+  body.push(`<rect x="-30" y="-6" width="18" height="7" rx="3.5" fill="${C.soft}" ${S(2)}/><rect x="12" y="-6" width="18" height="7" rx="3.5" fill="${C.soft}" ${S(2)}/>`);
+  g.push(`<g transform="rotate(${tilt} 0 -20)">${body.join('')}</g>`);
   return `<g transform="translate(${x} ${y}) scale(${scale})">${g.join('')}</g>`;
 }
 
@@ -205,4 +249,4 @@ ${body}
 </body></html>`;
 }
 
-module.exports = { C, a1, child, adult, humanoid, dog, label, callout, page };
+module.exports = { C, a1, child, adult, humanoid, dog, pet, label, callout, page };
